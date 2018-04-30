@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-error/service"
+	"go-error/app"
 )
 
 func main() {
