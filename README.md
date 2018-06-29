@@ -21,7 +21,7 @@ go get github.com/joaosoft/errors
 ## Usage 
 This examples are available in the project at [errors/example](https://github.com/joaosoft/errors/tree/master)
 ```go
-err := NewError(fmt.Errorf("erro 1"))
+err := errors.NewError(fmt.Errorf("erro 1"))
 err.Add(fmt.Errorf("erro 2"))
 err.Add(fmt.Errorf("erro 3"))
 
