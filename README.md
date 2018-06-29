@@ -1,5 +1,5 @@
-# go-error
-[![Build Status](https://travis-ci.org/joaosoft/go-error.svg?branch=master)](https://travis-ci.org/joaosoft/go-error) | [![codecov](https://codecov.io/gh/joaosoft/go-error/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/go-error) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/go-error)](https://goreportcard.com/report/github.com/joaosoft/go-error) | [![GoDoc](https://godoc.org/github.com/joaosoft/go-error?status.svg)](https://godoc.org/github.com/joaosoft/go-error/app)
+# errors
+[![Build Status](https://travis-ci.org/joaosoft/errors.svg?branch=master)](https://travis-ci.org/joaosoft/errors) | [![codecov](https://codecov.io/gh/joaosoft/errors/branch/master/graph/badge.svg)](https://codecov.io/gh/joaosoft/errors) | [![Go Report Card](https://goreportcard.com/badge/github.com/joaosoft/errors)](https://goreportcard.com/report/github.com/joaosoft/errors) | [![GoDoc](https://godoc.org/github.com/joaosoft/errors?status.svg)](https://godoc.org/github.com/joaosoft/errors)
 
 Error manager with error and caused by structure.
 
@@ -15,13 +15,13 @@ Project dependencies are managed using Dep. Read more about [Dep](https://github
 
 >### Go
 ```
-go get github.com/joaosoft/go-error/app
+go get github.com/joaosoft/errors
 ```
 
 ## Usage 
-This examples are available in the project at [go-error/example](https://github.com/joaosoft/go-error/tree/master/example)
+This examples are available in the project at [errors/example](https://github.com/joaosoft/errors/tree/master)
 ```go
-err := goerror.NewError(fmt.Errorf("erro 1"))
+err := NewError(fmt.Errorf("erro 1"))
 err.Add(fmt.Errorf("erro 2"))
 err.Add(fmt.Errorf("erro 3"))
 
