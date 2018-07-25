@@ -6,49 +6,56 @@ import (
 )
 
 type ErrorData struct {
-	*ErrorData
-	error
+	previous *ErrorData
+	current  error
 }
 
-func NewError(err error) *ErrorData {
-	return &ErrorData{error: err}
-}
+func New(err interface{}) *ErrorData {
 
-func FromString(err string) *ErrorData {
-	return &ErrorData{error: errors.New(err)}
-}
+	switch v := err.(type) {
+	case error:
+		return &ErrorData{current: v}
 
-func (e *ErrorData) AddError(newErr error) {
-	prevErr := &ErrorData{
-		ErrorData: e.ErrorData,
-		error:     e.error,
+	case string:
+		return &ErrorData{current: errors.New(v)}
+
+	default:
+		return &ErrorData{current: errors.New(fmt.Sprint(v))}
+
 	}
-
-	e.error = newErr
-	e.ErrorData = prevErr
 }
 
-func (e *ErrorData) AddString(newErr string) {
+func (e *ErrorData) Add(newErr interface{}) {
 	prevErr := &ErrorData{
-		ErrorData: e.ErrorData,
-		error:     e.error,
+		previous: e.previous,
+		current:  e.current,
 	}
+	e.previous = prevErr
 
-	e.error = errors.New(newErr)
-	e.ErrorData = prevErr
+	switch v := newErr.(type) {
+	case error:
+		e.current = v
+
+	case string:
+		e.current = errors.New(v)
+
+	default:
+		e.current = errors.New(fmt.Sprint(v))
+
+	}
 }
 
 func (e *ErrorData) Error() string {
-	return e.error.Error()
+	return e.current.Error()
 }
 
 func (e *ErrorData) Cause() string {
-	str := fmt.Sprintf("'%s'", e.error.Error())
-	nextErr := e.ErrorData
+	str := fmt.Sprintf("'%s'", e.current.Error())
+	nextErr := e.previous
 
 	for nextErr != nil {
-		str += fmt.Sprintf(", caused by '%s'", e.ErrorData.error.Error())
-		nextErr = nextErr.ErrorData
+		str += fmt.Sprintf(", caused by '%s'", e.previous.current.Error())
+		nextErr = nextErr.previous
 	}
 	return str
 }
