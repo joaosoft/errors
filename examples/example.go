@@ -2,14 +2,15 @@ package examples
 
 import (
 	"fmt"
+
 	"../../errors"
 )
 
 func main() {
 
-	err := errors.NewError(fmt.Errorf("erro 1"))
-	err.AddError(fmt.Errorf("erro 2"))
-	err.AddError(fmt.Errorf("erro 3"))
+	err := errors.New(fmt.Errorf("erro 1"))
+	err.Add(fmt.Errorf("erro 2"))
+	err.Add(fmt.Errorf("erro 3"))
 
 	fmt.Printf("Error: %s, Cause: %s", err.Error(), err.Cause())
 }
