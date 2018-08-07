@@ -8,9 +8,9 @@ import (
 type ListErr []*Err
 
 type Err struct {
-	Previous *Err
-	Err      error
-	Code     string
+	Previous *Err   `json:"previous"`
+	Err      error  `json:"error"`
+	Code     string `json:"code"`
 }
 
 func New(code string, err interface{}) *Err {
