@@ -7,20 +7,21 @@ import (
 
 type ErrorData struct {
 	previous *ErrorData
-	current  error
+	error    error
+	code     string
 }
 
 func New(err interface{}) *ErrorData {
 
 	switch v := err.(type) {
 	case error:
-		return &ErrorData{current: v}
+		return &ErrorData{error: v}
 
 	case string:
-		return &ErrorData{current: errors.New(v)}
+		return &ErrorData{error: errors.New(v)}
 
 	default:
-		return &ErrorData{current: errors.New(fmt.Sprint(v))}
+		return &ErrorData{error: errors.New(fmt.Sprint(v))}
 
 	}
 }
@@ -28,33 +29,54 @@ func New(err interface{}) *ErrorData {
 func (e *ErrorData) Add(newErr interface{}) {
 	prevErr := &ErrorData{
 		previous: e.previous,
-		current:  e.current,
+		error:    e.error,
 	}
 	e.previous = prevErr
 
 	switch v := newErr.(type) {
 	case error:
-		e.current = v
+		e.error = v
 
 	case string:
-		e.current = errors.New(v)
+		e.error = errors.New(v)
 
 	default:
-		e.current = errors.New(fmt.Sprint(v))
+		e.error = errors.New(fmt.Sprint(v))
 
 	}
 }
 
+func (e *ErrorData) Err() error {
+	return e.error
+}
+
+func (e *ErrorData) Code() string {
+	return e.code
+}
+
 func (e *ErrorData) Error() string {
-	return e.current.Error()
+	return e.error.Error()
+}
+
+func (e *ErrorData) Errors() []error {
+	errors := make([]error, 0)
+	errors = append(errors, e.error)
+
+	nextErr := e.previous
+	for nextErr != nil {
+		errors = append(errors, e.previous.error)
+		nextErr = nextErr.previous
+	}
+
+	return errors
 }
 
 func (e *ErrorData) Cause() string {
-	str := fmt.Sprintf("'%s'", e.current.Error())
-	nextErr := e.previous
+	str := fmt.Sprintf("'%s'", e.error.Error())
 
+	nextErr := e.previous
 	for nextErr != nil {
-		str += fmt.Sprintf(", caused by '%s'", e.previous.current.Error())
+		str += fmt.Sprintf(", caused by '%s'", e.previous.error.Error())
 		nextErr = nextErr.previous
 	}
 	return str
