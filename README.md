@@ -21,16 +21,16 @@ go get github.com/joaosoft/errors
 ## Usage 
 This examples are available in the project at [errors/example](https://github.com/joaosoft/errors/tree/master)
 ```go
-err := errors.New(fmt.Errorf("erro 1"))
-err.Add(fmt.Errorf("erro 2"))
-err.Add(fmt.Errorf("erro 3"))
+err := errors.New("0", "erro 1")
+err.Add(errors.New("0", "erro 2"))
+err.Add(errors.New("0", "erro 3"))
 
 fmt.Printf("Error: %s, Cause: %s", err.Error(), err.Cause())
 ```
 
 ##### Result:
 ```javascript
-Error: erro 3, Cause: 'erro 3', caused by 'erro 2', caused by 'erro 2'
+Error: erro 3, Cause: 'erro 3', caused by 'erro 2', caused by 'erro 1'
 ```
 
 ## Known issues
