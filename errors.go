@@ -5,29 +5,31 @@ import (
 	"fmt"
 )
 
-type ErrorData struct {
-	previous *ErrorData
+type ListErr []*Err
+
+type Err struct {
+	previous *Err
 	error    error
 	code     string
 }
 
-func New(code string, err interface{}) *ErrorData {
+func New(code string, err interface{}) *Err {
 
 	switch v := err.(type) {
 	case error:
-		return &ErrorData{code: code, error: v}
+		return &Err{code: code, error: v}
 
 	case string:
-		return &ErrorData{code: code, error: errors.New(v)}
+		return &Err{code: code, error: errors.New(v)}
 
 	default:
-		return &ErrorData{code: code, error: errors.New(fmt.Sprint(v))}
+		return &Err{code: code, error: errors.New(fmt.Sprint(v))}
 
 	}
 }
 
-func (e *ErrorData) Add(newErr *ErrorData) {
-	prevErr := &ErrorData{
+func (e *Err) Add(newErr *Err) {
+	prevErr := &Err{
 		previous: e.previous,
 		error:    e.error,
 	}
@@ -36,19 +38,19 @@ func (e *ErrorData) Add(newErr *ErrorData) {
 	e.error = newErr
 }
 
-func (e *ErrorData) Err() error {
+func (e *Err) Err() error {
 	return e.error
 }
 
-func (e *ErrorData) Code() string {
+func (e *Err) Code() string {
 	return e.code
 }
 
-func (e *ErrorData) Error() string {
+func (e *Err) Error() string {
 	return e.error.Error()
 }
 
-func (e *ErrorData) Errors() []error {
+func (e *Err) Errors() []error {
 	errors := make([]error, 0)
 	errors = append(errors, e.error)
 
@@ -61,7 +63,7 @@ func (e *ErrorData) Errors() []error {
 	return errors
 }
 
-func (e *ErrorData) Cause() string {
+func (e *Err) Cause() string {
 	str := fmt.Sprintf("'%s'", e.error.Error())
 
 	nextErr := e.previous
