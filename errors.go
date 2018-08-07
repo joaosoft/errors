@@ -11,39 +11,29 @@ type ErrorData struct {
 	code     string
 }
 
-func New(err interface{}) *ErrorData {
+func New(code string, err interface{}) *ErrorData {
 
 	switch v := err.(type) {
 	case error:
-		return &ErrorData{error: v}
+		return &ErrorData{code: code, error: v}
 
 	case string:
-		return &ErrorData{error: errors.New(v)}
+		return &ErrorData{code: code, error: errors.New(v)}
 
 	default:
-		return &ErrorData{error: errors.New(fmt.Sprint(v))}
+		return &ErrorData{code: code, error: errors.New(fmt.Sprint(v))}
 
 	}
 }
 
-func (e *ErrorData) Add(newErr interface{}) {
+func (e *ErrorData) Add(newErr *ErrorData) {
 	prevErr := &ErrorData{
 		previous: e.previous,
 		error:    e.error,
 	}
+
 	e.previous = prevErr
-
-	switch v := newErr.(type) {
-	case error:
-		e.error = v
-
-	case string:
-		e.error = errors.New(v)
-
-	default:
-		e.error = errors.New(fmt.Sprint(v))
-
-	}
+	e.error = newErr
 }
 
 func (e *ErrorData) Err() error {
