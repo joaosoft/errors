@@ -6,13 +6,13 @@ import (
 
 type IErr interface {
 	Add(newErr *Err)
-	Error() *Err
-	Errors() []*Err
+	Error() string
 	Cause() string
 
 	SetError(newE *Err)
 	GetError() *Err
 	GetPrevious() *Err
+	GetErrors() []*Err
 
 	SetCode(code string)
 	GetCode() string
@@ -30,19 +30,6 @@ func (e *Err) Add(newErr *Err) {
 
 func (e *Err) Error() string {
 	return e.error.Error()
-}
-
-func (e *Err) Errors() []*Err {
-	errors := make([]*Err, 0)
-	errors = append(errors, e)
-
-	nextErr := e.previous
-	for nextErr != nil {
-		errors = append(errors, e.previous)
-		nextErr = nextErr.previous
-	}
-
-	return errors
 }
 
 func (e *Err) Cause() string {
@@ -66,6 +53,19 @@ func (e *Err) GetError() *Err {
 
 func (e *Err) GetPrevious() *Err {
 	return e.previous
+}
+
+func (e *Err) GetErrors() []*Err {
+	errors := make([]*Err, 0)
+	errors = append(errors, e)
+
+	nextErr := e.previous
+	for nextErr != nil {
+		errors = append(errors, e.previous)
+		nextErr = nextErr.previous
+	}
+
+	return errors
 }
 
 func (e *Err) SetCode(code string) {
