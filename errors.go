@@ -1,67 +1,75 @@
 package errors
 
 import (
-	"errors"
 	"fmt"
 )
 
-type ListErr []*Err
+type IErr interface {
+	Add(newErr *Err)
+	Error() *Err
+	Errors() []*Err
+	Cause() string
 
-type Err struct {
-	Previous *Err   `json:"previous"`
-	Err      error  `json:"error"`
-	Code     string `json:"code"`
-}
+	SetError(newE *Err)
+	GetError() *Err
+	GetPrevious() *Err
 
-func New(code string, err interface{}) *Err {
-
-	switch v := err.(type) {
-	case error:
-		return &Err{Code: code, Err: v}
-
-	case string:
-		return &Err{Code: code, Err: errors.New(v)}
-
-	default:
-		return &Err{Code: code, Err: errors.New(fmt.Sprint(v))}
-
-	}
+	SetCode(code string)
+	GetCode() string
 }
 
 func (e *Err) Add(newErr *Err) {
 	prevErr := &Err{
-		Previous: e.Previous,
-		Err:      e.Err,
+		previous: e.previous,
+		error:    e.error,
 	}
 
-	e.Previous = prevErr
-	e.Err = newErr
+	e.previous = prevErr
+	e.error = newErr
 }
 
 func (e *Err) Error() string {
-	return e.Err.Error()
+	return e.error.Error()
 }
 
 func (e *Err) Errors() []*Err {
 	errors := make([]*Err, 0)
 	errors = append(errors, e)
 
-	nextErr := e.Previous
+	nextErr := e.previous
 	for nextErr != nil {
-		errors = append(errors, e.Previous)
-		nextErr = nextErr.Previous
+		errors = append(errors, e.previous)
+		nextErr = nextErr.previous
 	}
 
 	return errors
 }
 
 func (e *Err) Cause() string {
-	str := fmt.Sprintf("'%s'", e.Err.Error())
+	str := fmt.Sprintf("'%s'", e.error.Error())
 
-	nextErr := e.Previous
+	nextErr := e.previous
 	for nextErr != nil {
-		str += fmt.Sprintf(", caused by '%s'", e.Previous.Err.Error())
-		nextErr = nextErr.Previous
+		str += fmt.Sprintf(", caused by '%s'", e.previous.error.Error())
+		nextErr = nextErr.previous
 	}
 	return str
+}
+
+func (e *Err) SetError(newE *Err) {
+	e = newE
+}
+func (e *Err) GetError() *Err {
+	return e
+}
+func (e *Err) GetPrevious() *Err {
+	return e.previous
+}
+
+func (e *Err) SetCode(code string) {
+	e.code = code
+
+}
+func (e *Err) GetCode() string {
+	return e.code
 }
