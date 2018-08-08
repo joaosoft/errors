@@ -44,7 +44,7 @@ func (e *Err) Cause() string {
 }
 
 func (e *Err) SetError(newE *Err) {
-	e = newE
+	*e = *newE
 }
 
 func (e *Err) GetError() *Err {
