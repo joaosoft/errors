@@ -59,9 +59,11 @@ func (e *Err) Cause() string {
 func (e *Err) SetError(newE *Err) {
 	e = newE
 }
+
 func (e *Err) GetError() *Err {
 	return e
 }
+
 func (e *Err) GetPrevious() *Err {
 	return e.previous
 }
@@ -72,4 +74,8 @@ func (e *Err) SetCode(code string) {
 }
 func (e *Err) GetCode() string {
 	return e.code
+}
+
+func (e *ListErr) Len() int {
+	return len(*e)
 }

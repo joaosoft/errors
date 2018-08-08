@@ -1,6 +1,10 @@
 package errors
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
 func New(code string, err interface{}) *Err {
 
 	switch v := err.(type) {
