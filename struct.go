@@ -1,6 +1,6 @@
 package errors
 
-type ListErr []*Err
+type ListErr []IErr
 
 type Err struct {
 	previous *Err   `json:"previous"`
