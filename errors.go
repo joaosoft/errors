@@ -16,6 +16,8 @@ type IErr interface {
 
 	SetCode(code string)
 	GetCode() string
+
+	String() string
 }
 
 func (e *Err) Add(newErr *Err) {
@@ -79,4 +81,8 @@ func (e *Err) GetCode() string {
 func (e *Err) Format(values ...interface{}) *Err {
 	e.SetError(New(e.code, fmt.Sprintf(e.Error(), values)))
 	return e
+}
+
+func (e *Err) String() string {
+	return e.error.Error()
 }
