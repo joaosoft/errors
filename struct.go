@@ -1,9 +1,9 @@
 package errors
 
-type ListErr []IErr
+type ListErr []*Err
 
 type Err struct {
-	previous *Err   `json:"previous"`
-	error    error  `json:"error"`
-	code     string `json:"code"`
+	Previous *Err   `json:"previous,omitempty"`
+	Code     string `json:"code"`
+	Err      string `json:"error"`
 }

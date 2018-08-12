@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -9,80 +10,84 @@ type IErr interface {
 	Error() string
 	Cause() string
 
-	SetError(newE *Err)
-	GetError() *Err
-	GetPrevious() *Err
-	GetErrors() []*Err
-
+	SetErr(newErr *Err)
+	GetErr() *Err
 	SetCode(code string)
 	GetCode() string
 
+	GetPrevious() *Err
+	GetErrors() []*Err
+
+	Format(values ...interface{}) *Err
 	String() string
 }
 
 func (e *Err) Add(newErr *Err) {
 	prevErr := &Err{
-		previous: e.previous,
-		error:    e.error,
+		Previous: e.Previous,
+		Code:     e.Code,
+		Err:      e.Err,
 	}
 
-	e.previous = prevErr
-	e.error = newErr
+	e.Previous = prevErr
+	e.Code = newErr.Code
+	e.Err = newErr.Err
 }
 
 func (e *Err) Error() string {
-	return e.error.Error()
+	return e.Err
 }
 
 func (e *Err) Cause() string {
-	str := fmt.Sprintf("'%s'", e.error.Error())
+	str := fmt.Sprintf("'%s'", e.Err)
 
-	nextErr := e.previous
-	for nextErr != nil {
-		str += fmt.Sprintf(", caused by '%s'", e.previous.error.Error())
-		nextErr = nextErr.previous
+	prevErr := e.Previous
+	for prevErr != nil {
+		str += fmt.Sprintf(", caused by '%s'", prevErr.Err)
+		prevErr = prevErr.Previous
 	}
 	return str
 }
 
-func (e *Err) SetError(newE *Err) {
-	*e = *newE
+func (e *Err) SetErr(newErr *Err) {
+	*e = *newErr
 }
 
-func (e *Err) GetError() *Err {
+func (e *Err) GetErr() *Err {
 	return e
 }
 
 func (e *Err) GetPrevious() *Err {
-	return e.previous
+	return e.Previous
 }
 
 func (e *Err) GetErrors() []*Err {
 	errors := make([]*Err, 0)
 	errors = append(errors, e)
 
-	nextErr := e.previous
+	nextErr := e.Previous
 	for nextErr != nil {
-		errors = append(errors, e.previous)
-		nextErr = nextErr.previous
+		errors = append(errors, e.Previous)
+		nextErr = nextErr.Previous
 	}
 
 	return errors
 }
 
 func (e *Err) SetCode(code string) {
-	e.code = code
+	e.Code = code
 
 }
 func (e *Err) GetCode() string {
-	return e.code
+	return e.Code
 }
 
 func (e *Err) Format(values ...interface{}) *Err {
-	e.SetError(New(e.code, fmt.Sprintf(e.Error(), values)))
+	e.SetErr(New(e.Code, fmt.Sprintf(e.Error(), values)))
 	return e
 }
 
 func (e *Err) String() string {
-	return e.error.Error()
+	b, _ := json.Marshal(e)
+	return string(b)
 }

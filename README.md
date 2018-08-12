@@ -19,18 +19,31 @@ go get github.com/joaosoft/errors
 ```
 
 ## Usage 
-This examples are available in the project at [errors/example](https://github.com/joaosoft/errors/tree/master)
+This examples are available in the project at [example_test.gp](https://github.com/joaosoft/errors/tree/master/example_test.go)
 ```go
-err := errors.New("0", "erro 1")
-err.Add(errors.New("0", "erro 2"))
-err.Add(errors.New("0", "erro 3"))
+func TestExampleSimple(t *testing.T) {
 
-fmt.Printf("Error: %s, Cause: %s", err.Error(), err.Cause())
-```
+	err := New("1", "erro 1")
+	err.Add(New("2", "erro 2"))
+	err.Add(New("3", "erro 3"))
 
-##### Result:
-```javascript
-Error: erro 3, Cause: 'erro 3', caused by 'erro 2', caused by 'erro 1'
+	fmt.Printf("Error: %s, Cause: %s", err.String(), err.Cause())
+
+	assert.Equal(t, err.String(), `{"previous":{"previous":{"code":"1","error":"erro 1"},"code":"2","error":"erro 2"},"code":"3","error":"erro 3"}`)
+	assert.Equal(t, err.Cause(), `'erro 3', caused by 'erro 2', caused by 'erro 1'`)
+}
+
+func TestExampleList(t *testing.T) {
+
+	var errs ListErr
+	errs.Add(New("1", "erro 1"))
+	errs.Add(New("2", "erro 2"))
+	errs.Add(New("3", "erro 3"))
+
+	fmt.Printf("Errors: %s", errs.String())
+
+	assert.Equal(t, errs.String(), `[{"code":"1","error":"erro 1"},{"code":"2","error":"erro 2"},{"code":"3","error":"erro 3"}]`)
+}
 ```
 
 ## Known issues
