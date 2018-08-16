@@ -5,23 +5,6 @@ import (
 	"fmt"
 )
 
-type IErr interface {
-	Add(newErr *Err)
-	Error() string
-	Cause() string
-
-	SetErr(newErr *Err)
-	GetErr() *Err
-	SetCode(code string)
-	GetCode() string
-
-	GetPrevious() *Err
-	GetErrors() []*Err
-
-	Format(values ...interface{}) *Err
-	String() string
-}
-
 func (e *Err) Add(newErr *Err) {
 	prevErr := &Err{
 		Previous: e.Previous,
