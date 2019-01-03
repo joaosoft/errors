@@ -2,19 +2,58 @@ package errors
 
 import (
 	"fmt"
+	"runtime"
+	"runtime/debug"
+	"strings"
 )
 
-func New(code string, err interface{}, params ...interface{}) *Err {
+func New(level Level, code int, err interface{}, params ...interface{}) *Err {
+
+	var message string
 
 	switch v := err.(type) {
 	case error:
-		return &Err{Code: code, Message: v.Error()}
+		message = fmt.Sprintf(v.Error(), params...)
 
 	case string:
-		return &Err{Code: code, Message: fmt.Sprintf(v, params...)}
+		message = fmt.Sprintf(v, params...)
 
 	default:
-		return &Err{Code: code, Message: fmt.Sprint(v)}
+		message = fmt.Sprintf(fmt.Sprint(v), params...)
+	}
 
+	var stack string
+	if level <= ErrorLevel {
+		pc := make([]uintptr, 1)
+		runtime.Callers(2, pc)
+		function := runtime.FuncForPC(pc[0])
+		stack = string(debug.Stack())
+		stack = stack[strings.Index(stack, function.Name()):]
+	}
+
+	return &Err{
+		Level:   level,
+		Code:    code,
+		Message: message,
+		Stack:   stack,
+	}
+}
+
+func Add(err *Err) *Err {
+
+	var stack string
+	if err.Level <= ErrorLevel {
+		pc := make([]uintptr, 1)
+		runtime.Callers(2, pc)
+		function := runtime.FuncForPC(pc[0])
+		stack = string(debug.Stack())
+		stack = stack[strings.Index(stack, function.Name()):]
+	}
+
+	return &Err{
+		Level:   err.Level,
+		Code:    err.Code,
+		Message: err.Message,
+		Stack:   stack,
 	}
 }

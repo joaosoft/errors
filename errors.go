@@ -3,18 +3,36 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
+	"runtime"
+	"runtime/debug"
+	"strings"
 )
 
-func (e *Err) Add(newErr *Err) {
+func (e *Err) Add(newErr *Err) *Err {
 	prevErr := &Err{
 		Previous: e.Previous,
+		Level:    e.Level,
 		Code:     e.Code,
 		Message:  e.Message,
+		Stack:    e.Stack,
 	}
 
-	e.Previous = prevErr
-	e.Code = newErr.Code
-	e.Message = newErr.Message
+	var stack string
+	if newErr.Level <= ErrorLevel {
+		pc := make([]uintptr, 1)
+		runtime.Callers(2, pc)
+		function := runtime.FuncForPC(pc[0])
+		stack = string(debug.Stack())
+		stack = stack[strings.Index(stack, function.Name()):]
+	}
+
+	return &Err{
+		Previous: prevErr,
+		Level:    newErr.Level,
+		Code:     newErr.Code,
+		Message:  newErr.Message,
+		Stack:    stack,
+	}
 }
 
 func (e *Err) Error() string {
@@ -32,19 +50,7 @@ func (e *Err) Cause() string {
 	return str
 }
 
-func (e *Err) SetError(newErr *Err) {
-	*e = *newErr
-}
-
-func (e *Err) GetError() *Err {
-	return e
-}
-
-func (e *Err) GetPrevious() *Err {
-	return e.Previous
-}
-
-func (e *Err) GetErrors() []*Err {
+func (e *Err) Errors() []*Err {
 	errors := make([]*Err, 0)
 	errors = append(errors, e)
 
@@ -57,16 +63,8 @@ func (e *Err) GetErrors() []*Err {
 	return errors
 }
 
-func (e *Err) SetCode(code string) {
-	e.Code = code
-
-}
-func (e *Err) GetCode() string {
-	return e.Code
-}
-
 func (e *Err) Format(values ...interface{}) *Err {
-	e.SetError(New(e.Code, fmt.Sprintf(e.Error(), values)))
+	e.Message = fmt.Sprintf(e.Error(), values)
 	return e
 }
 
