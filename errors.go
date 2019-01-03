@@ -9,34 +9,34 @@ func (e *Err) Add(newErr *Err) {
 	prevErr := &Err{
 		Previous: e.Previous,
 		Code:     e.Code,
-		Err:      e.Err,
+		Message:  e.Message,
 	}
 
 	e.Previous = prevErr
 	e.Code = newErr.Code
-	e.Err = newErr.Err
+	e.Message = newErr.Message
 }
 
 func (e *Err) Error() string {
-	return e.Err
+	return e.Message
 }
 
 func (e *Err) Cause() string {
-	str := fmt.Sprintf("'%s'", e.Err)
+	str := fmt.Sprintf("'%s'", e.Message)
 
 	prevErr := e.Previous
 	for prevErr != nil {
-		str += fmt.Sprintf(", caused by '%s'", prevErr.Err)
+		str += fmt.Sprintf(", caused by '%s'", prevErr.Message)
 		prevErr = prevErr.Previous
 	}
 	return str
 }
 
-func (e *Err) SetErr(newErr *Err) {
+func (e *Err) SetError(newErr *Err) {
 	*e = *newErr
 }
 
-func (e *Err) GetErr() *Err {
+func (e *Err) GetError() *Err {
 	return e
 }
 
@@ -66,7 +66,7 @@ func (e *Err) GetCode() string {
 }
 
 func (e *Err) Format(values ...interface{}) *Err {
-	e.SetErr(New(e.Code, fmt.Sprintf(e.Error(), values)))
+	e.SetError(New(e.Code, fmt.Sprintf(e.Error(), values)))
 	return e
 }
 

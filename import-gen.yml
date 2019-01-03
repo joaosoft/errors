@@ -1,0 +1,9 @@
+github.com/davecgh/go-spew:
+  branch: master
+  revision: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
+github.com/pmezard/go-difflib:
+  branch: master
+  revision: 792786c7400a136282c1664665ae0a8db921c6c2
+github.com/stretchr/testify:
+  branch: master
+  revision: f35b8ab0b5a2cef36673838d662e249dd9c94686
