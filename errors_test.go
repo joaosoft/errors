@@ -9,9 +9,9 @@ import (
 
 func TestExampleSimple(t *testing.T) {
 
-	err := New(InfoLevel, 1, "error 1")
-	err.Add(New(ErrorLevel, 2, "error 2"))
-	err.Add(New(PanicLevel, 3, "error 3"))
+	err := New(InfoLevel, 1, "error 1").
+		Add(New(ErrorLevel, 2, "error 2")).
+		Add(New(PanicLevel, 3, "error 3"))
 
 	fmt.Printf("Error: %s, Cause: %s", err.String(), err.Cause())
 
