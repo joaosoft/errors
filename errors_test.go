@@ -19,8 +19,8 @@ func TestExampleSimple(t *testing.T) {
 
 	fmt.Printf("Error: %s, Cause: %s", err.String(), err.Cause())
 
-	assert.Equal(t, err.String(), `Error: {"previous":{"previous":{"level":2,"code":1,"message":"Error one","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x3f\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"},"level":2,"code":2,"message":"Error two","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x59\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"},"level":2,"code":3,"message":"Error three","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x73\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"}`)
-	assert.Equal(t, err.Cause(), `'Error three', caused by 'Error two', caused by 'Error one''`)
+	assert.Equal(t, err.String(), `{"previous":{"previous":{"level":2,"code":1,"message":"Error one","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x3f\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"},"level":2,"code":2,"message":"Error two","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x59\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"},"level":2,"code":3,"message":"Error three","stack":"main.exampleSimple()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:22 +0x73\nmain.main()\n\t/Users/joaoribeiro/workspace/go/personal/src/errors/examples/main.go:16 +0x20\n"}`)
+	assert.Equal(t, err.Cause(), `'Error three', caused by 'Error two', caused by 'Error one'`)
 }
 
 func TestExampleList(t *testing.T) {
