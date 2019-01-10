@@ -7,20 +7,27 @@ import (
 )
 
 var (
-	ErrorOne = errors.New(errors.ErrorLevel, 1, "Error one")
-	ErrorTwo = errors.New(errors.ErrorLevel, 2, "Error two")
+	ErrorOne   = errors.New(errors.ErrorLevel, 1, "Error one")
+	ErrorTwo   = errors.New(errors.ErrorLevel, 2, "Error two")
+	ErrorThree = errors.New(errors.ErrorLevel, 3, "Error three")
 )
 
 func main() {
-	fmt.Println("\nADDING ERRORS!\n")
+	exampleSimple()
+	exampleList()
+}
 
-	errs := errors.Add(ErrorOne).
-		Add(ErrorTwo)
+func exampleSimple() {
 
-	fmt.Println(errs.Cause())
+	err := errors.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
 
-	fmt.Println(errs.Stack)
-	fmt.Println(errs.Previous.Stack)
+	fmt.Printf("\nError: %s, Cause: %s", err.String(), err.Cause())
+}
 
-	fmt.Println("\nDONE!")
+func exampleList() {
+
+	var errs errors.ListErr
+	errs.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
+
+	fmt.Printf("\n\nErrors: %s", errs.String())
 }

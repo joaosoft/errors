@@ -4,8 +4,8 @@ type ListErr []*Err
 
 type Err struct {
 	Previous *Err   `json:"previous,omitempty"`
-	Level    Level  `json:"code"`
+	Level    Level  `json:"level"`
 	Code     int    `json:"code"`
-	Message  string `json:"error"`
+	Message  string `json:"message"`
 	Stack    string `json:"stack"`
 }
