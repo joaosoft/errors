@@ -28,7 +28,11 @@ func New(level Level, code int, err interface{}, params ...interface{}) *Err {
 		runtime.Callers(2, pc)
 		function := runtime.FuncForPC(pc[0])
 		stack = string(debug.Stack())
-		stack = stack[strings.Index(stack, function.Name()):]
+		index := strings.Index(stack, function.Name())
+		if index < 0 {
+			index = 0
+		}
+		stack = stack[index:]
 	}
 
 	return &Err{
@@ -47,7 +51,11 @@ func Add(err *Err) *Err {
 		runtime.Callers(2, pc)
 		function := runtime.FuncForPC(pc[0])
 		stack = string(debug.Stack())
-		stack = stack[strings.Index(stack, function.Name()):]
+		index := strings.Index(stack, function.Name())
+		if index < 0 {
+			index = 0
+		}
+		stack = stack[index:]
 	}
 
 	return &Err{

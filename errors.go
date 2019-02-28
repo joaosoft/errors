@@ -23,7 +23,11 @@ func (e *Err) Add(newErr *Err) *Err {
 		runtime.Callers(2, pc)
 		function := runtime.FuncForPC(pc[0])
 		stack = string(debug.Stack())
-		stack = stack[strings.Index(stack, function.Name()):]
+		index := strings.Index(stack, function.Name())
+		if index < 0 {
+			index = 0
+		}
+		stack = stack[index:]
 	}
 
 	return &Err{
