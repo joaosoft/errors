@@ -68,7 +68,7 @@ func (e *Err) Errors() []*Err {
 }
 
 func (e *Err) Format(values ...interface{}) *Err {
-	e.Message = fmt.Sprintf(e.Error(), values)
+	e.Message = fmt.Sprintf(e.Error(), values...)
 	return e
 }
 
