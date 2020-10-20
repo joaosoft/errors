@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-func (e *Err) Add(newErr *Err) *Err {
-	prevErr := &Err{
+func (e *Error) Add(err *Error) *Error {
+	prevError := &Error{
 		Previous: e.Previous,
 		Level:    e.Level,
 		Code:     e.Code,
@@ -18,7 +18,7 @@ func (e *Err) Add(newErr *Err) *Err {
 	}
 
 	var stack string
-	if newErr.Level <= ErrorLevel {
+	if err.Level <= LevelError {
 		pc := make([]uintptr, 1)
 		runtime.Callers(2, pc)
 		function := runtime.FuncForPC(pc[0])
@@ -30,20 +30,20 @@ func (e *Err) Add(newErr *Err) *Err {
 		stack = stack[index:]
 	}
 
-	return &Err{
-		Previous: prevErr,
-		Level:    newErr.Level,
-		Code:     newErr.Code,
-		Message:  newErr.Message,
+	return &Error{
+		Previous: prevError,
+		Level:    err.Level,
+		Code:     err.Code,
+		Message:  err.Message,
 		Stack:    stack,
 	}
 }
 
-func (e *Err) Error() string {
+func (e *Error) Error() string {
 	return e.Message
 }
 
-func (e *Err) Cause() string {
+func (e *Error) Cause() string {
 	str := fmt.Sprintf("'%s'", e.Message)
 
 	prevErr := e.Previous
@@ -54,8 +54,8 @@ func (e *Err) Cause() string {
 	return str
 }
 
-func (e *Err) Errors() []*Err {
-	errors := make([]*Err, 0)
+func (e *Error) Errors() []*Error {
+	errors := make([]*Error, 0)
 	errors = append(errors, e)
 
 	nextErr := e.Previous
@@ -67,12 +67,12 @@ func (e *Err) Errors() []*Err {
 	return errors
 }
 
-func (e *Err) Format(values ...interface{}) *Err {
+func (e *Error) Format(values ...interface{}) *Error {
 	e.Message = fmt.Sprintf(e.Error(), values...)
 	return e
 }
 
-func (e *Err) String() string {
+func (e *Error) String() string {
 	b, _ := json.Marshal(e)
 	return string(b)
 }

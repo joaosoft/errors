@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	ErrorOne   = errors.New(errors.ErrorLevel, 1, "Error one")
-	ErrorTwo   = errors.New(errors.ErrorLevel, 2, "Error two")
-	ErrorThree = errors.New(errors.ErrorLevel, 3, "Error three")
+	ErrorOne   = errors.New(errors.LevelError, 1, "error one")
+	ErrorTwo   = errors.New(errors.LevelError, 2, "error two")
+	ErrorThree = errors.New(errors.LevelError, 3, "error three")
 )
 
 func main() {
@@ -21,13 +21,14 @@ func exampleSimple() {
 
 	err := errors.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
 
-	fmt.Printf("\nError: %s, Cause: %s", err.String(), err.Cause())
+	fmt.Printf("\nerror: %s, Cause: %s", err.String(), err.Cause())
 }
 
 func exampleList() {
 
-	var errs errors.ListErr
+	var errs errors.ErrorList
 	errs.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
 
 	fmt.Printf("\n\nErrors: %s", errs.String())
+	fmt.Printf("\n\nErrors: %s", ErrorOne.Error())
 }

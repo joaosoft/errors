@@ -7,22 +7,22 @@ import (
 )
 
 var (
-	ErrorOne   = New(ErrorLevel, 1, "Error one")
-	ErrorTwo   = New(ErrorLevel, 2, "Error two")
-	ErrorThree = New(ErrorLevel, 3, "Error three")
+	ErrorOne   = New(LevelError, 1, "error one")
+	ErrorTwo   = New(LevelError, 2, "error two")
+	ErrorThree = New(LevelError, 3, "error three")
 )
 
 func TestExampleSimple(t *testing.T) {
 
 	err := Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
 
-	assert.Equal(t, err.Message, `Error three`)
-	assert.Equal(t, err.Cause(), `'Error three', caused by 'Error two', caused by 'Error one'`)
+	assert.Equal(t, err.Message, `error three`)
+	assert.Equal(t, err.Cause(), `'error three', caused by 'error two', caused by 'error one'`)
 }
 
 func TestExampleList(t *testing.T) {
 
-	var errs ListErr
+	var errs ErrorList
 	errs.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
 
 	assert.Equal(t, errs.Len(), 3)
