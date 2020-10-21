@@ -68,3 +68,13 @@ func Add(err *Error) *Error {
 		Stack:   stack,
 	}
 }
+
+func AddList(errs ...*Error) *ErrorList {
+	errorList := &ErrorList{}
+
+	for _, err := range errs {
+		errorList.Add(err)
+	}
+
+	return errorList
+}
