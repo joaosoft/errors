@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	".."
+	errors ".."
 )
 
 var (
@@ -15,6 +15,7 @@ var (
 func main() {
 	exampleSimple()
 	exampleList()
+	exampleError()
 }
 
 func exampleSimple() {
@@ -31,4 +32,12 @@ func exampleList() {
 
 	fmt.Printf("\n\nErrors: %s", errs.String())
 	fmt.Printf("\n\nErrors: %s", ErrorOne.Error())
+}
+
+func exampleError() {
+
+	var err error
+	err = errors.Add(ErrorOne).Add(ErrorTwo).Add(ErrorThree)
+
+	fmt.Printf("\nerr: %s, Cause: %s", err, err)
 }
