@@ -1,5 +1,3 @@
-module github.com/joaosoft/errors
+module errors
 
 go 1.16
-
-require github.com/stretchr/testify v1.7.0
