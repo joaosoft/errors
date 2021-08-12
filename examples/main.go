@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	errors ".."
+	"github.com/joaosoft/errors"
 )
 
 var (
