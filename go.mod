@@ -1,4 +1,4 @@
-module github.com/joaosoft/error
+module github.com/joaosoft/errors
 
 go 1.20
 
