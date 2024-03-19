@@ -1,9 +1,6 @@
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/joaosoft/errors v0.0.0-20220421173057-4de40a4d3443
-## explicit; go 1.18
-github.com/joaosoft/errors
 # github.com/pmezard/go-difflib v1.0.0
 ## explicit
 github.com/pmezard/go-difflib/difflib
